@@ -9,5 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Almentor.Services.Abstraction\Almentor.Services.Abstraction.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 </Project>

@@ -1,5 +1,10 @@
 
+using Almentor.Domain.Contracts;
 using Almentor.Presistence.Data.DbContexts;
+using Almentor.Presistence.Repositories;
+using Almentor.Services;
+using Almentor.Services.Abstraction;
+using Almentor.Services.MappingProfiles;
 using Microsoft.EntityFrameworkCore;
 
 namespace Almentor.API
@@ -21,6 +26,16 @@ namespace Almentor.API
 
 
             });
+
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddAutoMapper(typeof(ServiceAssemblyReference).Assembly);
+            builder.Services.AddScoped<IProjectService, ProjectService>();
+
+
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
