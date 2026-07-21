@@ -1,4 +1,7 @@
 
+using Almentor.Presistence.Data.DbContexts;
+using Microsoft.EntityFrameworkCore;
+
 namespace Almentor.API
 {
     public class Program
@@ -12,7 +15,12 @@ namespace Almentor.API
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 
+
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
