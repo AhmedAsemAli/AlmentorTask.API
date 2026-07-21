@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/ApplicationCoreLayer/">
+    <Project Path="Almentor.Domain/Almentor.Domain.csproj" />
+    <Project Path="Almentor.Services.Abstraction/Almentor.Services.Abstraction.csproj" />
+    <Project Path="Almentor.Services/Almentor.Services.csproj" />
+  </Folder>
+  <Folder Name="/InfrastructionLayer/">
+    <Project Path="Almentor.Presistence/Almentor.Presistence.csproj" />
+  </Folder>
+  <Folder Name="/PresentationLayer/">
+    <Project Path="Almentor.API/Almentor.API.csproj" />
+    <Project Path="Almentor.Presentation/Almentor.Presentation.csproj" />
+  </Folder>
+  <Project Path="Almentor.Shared/Almentor.Shared.csproj" />
+</Solution>

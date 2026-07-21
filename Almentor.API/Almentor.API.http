@@ -1,0 +1,6 @@
+@Almentor.API_HostAddress = http://localhost:5062
+
+GET {{Almentor.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
