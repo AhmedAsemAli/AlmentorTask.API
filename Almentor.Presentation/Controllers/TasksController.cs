@@ -29,16 +29,8 @@ namespace Almentor.Presentation.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<TaskDto>> GetTaskById(int id)
         {
+
             var task = await _taskService.GetByIdAsync(id);
-
-            if (task is null)
-            {
-                return NotFound(new
-                {
-                    Message = $"Task with id {id} was not found."
-                });
-            }
-
             return Ok(task);
         }
 
@@ -48,31 +40,13 @@ namespace Almentor.Presentation.Controllers
             UpdateTaskDto dto)
         {
             var task = await _taskService.UpdateTaskAsync(id, dto);
-
-            if (task is null)
-            {
-                return NotFound(new
-                {
-                    Message = $"Task with id {id} was not found."
-                });
-            }
-
             return Ok(task);
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
-            var deleted = await _taskService.DeleteTaskAsync(id);
-
-            if (!deleted)
-            {
-                return NotFound(new
-                {
-                    Message = $"Task with id {id} was not found."
-                });
-            }
-
+            await _taskService.DeleteTaskAsync(id);
             return NoContent();
         }
     }

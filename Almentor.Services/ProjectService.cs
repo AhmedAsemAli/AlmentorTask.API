@@ -1,6 +1,7 @@
 ﻿using Almentor.Domain.Contracts;
 using Almentor.Domain.Entities;
 using Almentor.Services.Abstraction;
+using Almentor.Services.Exceptions;
 using Almentor.Services.Specifications;
 using Almentor.Shared;
 using Almentor.Shared.DTOs;
@@ -25,30 +26,35 @@ namespace Almentor.Services
         public async Task<ProjectDto?> CreateAsync(CreateProjectDto dto)
         {
 
+            var repo = _unitOfWork.GetRepository<Project>();
+
+            var projects = await repo.GetAllAsync();
+
+            if (projects.Any(p => p.Name.ToLower() == dto.Name.ToLower()))
+            {
+                throw new DuplicateProjectNameException(dto.Name);
+            }
+
             var project = _mapper.Map<Project>(dto);
 
-            await _unitOfWork.GetRepository<Project>().AddAsync(project);
-
+            await repo.AddAsync(project);
             await _unitOfWork.SaveChangesAsync();
 
             return _mapper.Map<ProjectDto>(project);
-
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var repo = _unitOfWork.GetRepository<Project>();
 
             var project = await repo.GetByIdAsync(id);
 
             if (project is null)
-                return false;
-
+                throw new ProjectNotFoundException(id);
             repo.Delete(project);
 
             await _unitOfWork.SaveChangesAsync();
 
-            return true;
         }
         public async Task<PaginatedResult<ProjectDto>> GetAllAsync(ProjectQueryParams queryParams)
         {
@@ -70,7 +76,7 @@ namespace Almentor.Services
           .GetByIdAsync(id);
 
             if (project is null)
-                return null;
+                throw new ProjectNotFoundException(id);
 
             return _mapper.Map<ProjectDto?>(project);
 
@@ -84,8 +90,15 @@ namespace Almentor.Services
             var project = await repo.GetByIdAsync(id);
 
             if (project is null)
-                return null;
+                throw new ProjectNotFoundException(id);
+            var projects = await repo.GetAllAsync();
 
+            if (projects.Any(p =>
+                p.Id != id &&
+                p.Name.ToLower() == dto.Name.ToLower()))
+            {
+                throw new DuplicateProjectNameException(dto.Name);
+            }
             project.Name = dto.Name;
             project.Description = dto.Description;
             project.UpdatedAt = DateTime.UtcNow;

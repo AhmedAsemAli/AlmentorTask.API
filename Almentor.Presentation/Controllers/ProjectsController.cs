@@ -44,15 +44,7 @@ namespace Almentor.Presentation.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ProjectDto>> GetById(int id)
         {
-            var project = await _projectService.GetByIdAsync(id);
-
-            if (project is null)
-                return NotFound(new
-                {
-                    Message = $"Project with id {id} was not found."
-                });
-
-            return Ok(project);
+            return Ok(await _projectService.GetByIdAsync(id));
         }
 
         [HttpPut("{id:int}")]
@@ -60,46 +52,24 @@ namespace Almentor.Presentation.Controllers
             int id,
             UpdateProjectDto dto)
         {
-            var project = await _projectService.UpdateAsync(id, dto);
 
-            if (project is null)
-                return NotFound(new
-                {
-                    Message = $"Project with id {id} was not found."
-                });
-
-            return Ok(project);
+            return Ok(await _projectService.UpdateAsync(id, dto));
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _projectService.DeleteAsync(id);
 
-            if (!deleted)
-                return NotFound(new
-                {
-                    Message = $"Project with id {id} was not found."
-                });
-
+            await _projectService.DeleteAsync(id);
             return NoContent();
         }
 
 
-        [HttpGet("/tasks{id:int}")]
+        [HttpGet("/tasks/{id:int}")]
         public async Task<ActionResult<TaskDto>> GetTaskById(int id)
         {
-            var task = await _taskService.GetByIdAsync(id);
 
-            if (task is null)
-            {
-                return NotFound(new
-                {
-                    Message = $"Task with id {id} was not found."
-                });
-            }
-
-            return Ok(task);
+            return Ok(await _taskService.GetByIdAsync(id));
         }
 
 
@@ -110,18 +80,10 @@ namespace Almentor.Presentation.Controllers
         {
             var task = await _taskService.CreateTaskForProjectAsync(projectId, dto);
 
-            if (task is null)
-            {
-                return NotFound(new
-                {
-                    Message = $"Project with id {projectId} was not found."
-                });
-            }
-
-            return CreatedAtAction(
-                nameof(GetTaskById),
-                new { id = task.Id },
-                task);
+                  return CreatedAtAction(
+                    nameof(GetTaskById),
+                 new { id = task!.Id },
+                      task);
         }
 
         [HttpGet("{projectId:int}/tasks")]

@@ -1,15 +1,16 @@
 ﻿using Almentor.Domain.Contracts;
 using Almentor.Domain.Entities;
+using Almentor.Domain.Enums;
 using Almentor.Services.Abstraction;
+using Almentor.Services.Exceptions;
 using Almentor.Services.Specifications;
 using Almentor.Shared;
 using Almentor.Shared.DTOs;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Extensions.Logging;
-using Almentor.Domain.Enums;
 using TaskStatus = Almentor.Domain.Enums.TaskStatus;
 namespace Almentor.Services
 {
@@ -19,26 +20,26 @@ namespace Almentor.Services
         private readonly IMapper _mapper;
         private readonly ILogger<TaskService> _logger;
 
-        public TaskService(IUnitOfWork unitOfWork, IMapper mapper)
+        public TaskService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<TaskService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
         public async Task<TaskDto?> CreateTaskForProjectAsync(int projectId, CreateTaskDto dto)
         {
             if (dto.DueDate.HasValue && dto.DueDate.Value.Date < DateTime.UtcNow.Date)
             {
-                throw new Exception("Due date cannot be in the past.");
+                throw new InvalidDueDateException();
             }
 
             var projectRepo = _unitOfWork.GetRepository<Project>();
 
             var project = await projectRepo.GetByIdAsync(projectId);
 
-            
 
             if (project is null)
-                return null;
+                throw new ProjectNotFoundException(projectId);
 
             var task = _mapper.Map<TaskItem>(dto);
             task.ProjectId = projectId;
@@ -50,30 +51,29 @@ namespace Almentor.Services
             return _mapper.Map<TaskDto>(task);
         }
 
-        public async Task<bool> DeleteTaskAsync(int id)
+        public async Task DeleteTaskAsync(int id)
         {
+
             var repo = _unitOfWork.GetRepository<TaskItem>();
 
             var task = await repo.GetByIdAsync(id);
 
             if (task is null)
-                return false;
+                throw new TaskNotFoundException(id);
 
             repo.Delete(task);
 
             await _unitOfWork.SaveChangesAsync();
-
-            return true;
         }
 
         public async Task<TaskDto?> GetByIdAsync(int id)
         {
             var repo = _unitOfWork.GetRepository<TaskItem>();
 
-            var task = await repo.GetByIdAsync(id);
+            var task = await repo.GetByIdAsync(new TaskSpecifications(id));
 
             if (task is null)
-                return null;
+                throw new TaskNotFoundException(id);
 
             return _mapper.Map<TaskDto>(task);
         }
@@ -105,14 +105,14 @@ namespace Almentor.Services
         {
             if (dto.DueDate.HasValue && dto.DueDate.Value.Date < DateTime.UtcNow.Date)
             {
-                throw new Exception("Due date cannot be in the past.");
+                throw new InvalidDueDateException();
             }
             var repo = _unitOfWork.GetRepository<TaskItem>();
 
-            var task = await repo.GetByIdAsync(id);
+            var task = await repo.GetByIdAsync(new TaskSpecifications(id));
 
             if (task is null)
-                return null;
+                throw new TaskNotFoundException(id);
 
             task.Title = dto.Title;
             task.Description = dto.Description;

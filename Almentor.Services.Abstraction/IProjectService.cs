@@ -21,7 +21,7 @@ namespace Almentor.Services.Abstraction
         Task<ProjectDto?> UpdateAsync(int id, UpdateProjectDto dto);
 
         // 5. Delete a project (cascade deletes all its tasks)
-        Task<bool> DeleteAsync(int id);
+        Task DeleteAsync(int id);
 
         
     }

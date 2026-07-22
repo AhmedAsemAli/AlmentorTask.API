@@ -13,7 +13,7 @@ namespace Almentor.Services.Abstraction
 
         // 2. List tasks for a specific project (paginated, filterable, sortable)
         // 3. List all tasks across all projects (paginated, filterable, sortable, searchable)
-        // (يُستخدم نفس التابع لكلا الغرضين بنمرير projectId اختياري)
+        
         Task<PaginatedResult<TaskDto>> GetTasksAsync(int? projectId, TaskQueryParams queryParams);
 
         // 4. Get a single task
@@ -23,6 +23,6 @@ namespace Almentor.Services.Abstraction
         Task<TaskDto?> UpdateTaskAsync(int id, UpdateTaskDto dto);
 
         // 6. Delete a task
-        Task<bool> DeleteTaskAsync(int id);
+        Task DeleteTaskAsync(int id);
     }
 }

@@ -1,10 +1,13 @@
 
+using Almentor.API.CustomMiddlewares;
+using Almentor.API.Factories;
 using Almentor.Domain.Contracts;
 using Almentor.Presistence.Data.DbContexts;
 using Almentor.Presistence.Repositories;
 using Almentor.Services;
 using Almentor.Services.Abstraction;
 using Almentor.Services.MappingProfiles;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -27,7 +30,14 @@ namespace Almentor.API
 
 
             });
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = ApiResponseFactory.GenerateApiValidationResponse;
+                {
 
+                }
+                ;
+            });
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -46,7 +56,7 @@ namespace Almentor.API
 
 
             var app = builder.Build();
-
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

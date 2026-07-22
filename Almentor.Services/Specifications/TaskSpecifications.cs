@@ -8,42 +8,6 @@ namespace Almentor.Services.Specifications
 {
     public class TaskSpecifications : BaseSpecifications<TaskItem>
     {
-        //public TaskSpecifications(TaskQueryParams queryParams)
-        //   : base(TaskSpecificationsHelper.GetCriteria(queryParams))
-        //{
-        //    AddInclude(p => p.Project);
-        //    switch (queryParams.sort)
-        //    {
-        //        case TaskSortingOptions.due_date:
-        //            AddOrderBy(x => x.DueDate);
-        //            break;
-
-        //        case TaskSortingOptions.priority:
-        //            AddOrderByDescending(x => x.Priority);
-        //            break;
-
-        //        case TaskSortingOptions.created_at_Asc:
-        //            AddOrderBy(x => x.CreatedAt);
-        //            break;
-
-        //        case TaskSortingOptions.created_at_Desc:
-        //            AddOrderByDescending(x => x.CreatedAt);
-        //            break;
-
-        //        default:
-        //            AddOrderByDescending(x => x.CreatedAt);
-        //            break;
-        //    }
-        //    ApplyPagination(queryParams.PageIndex, queryParams.PageSize);
-        //}
-
-
-        //public TaskSpecifications(int id) : base(p => p.Id == id)
-        //{
-        //    AddInclude(p => p.Project);
-        //}
-
-
 
         public TaskSpecifications(int? projectId, TaskQueryParams queryParams)
             : base(x =>
@@ -75,13 +39,23 @@ namespace Almentor.Services.Specifications
 
             switch (queryParams.sort)
             {
-                case TaskSortingOptions.due_date:
+                case TaskSortingOptions.due_date_Asc:
                     AddOrderBy(x => x.DueDate);
                     break;
 
-                case TaskSortingOptions.priority:
+                case TaskSortingOptions.due_date_Desc:
+                    AddOrderByDescending(x => x.DueDate);
+                    break;
+
+
+                case TaskSortingOptions.priority_Asc:
+                    AddOrderBy(x => x.Priority);
+                    break;
+
+                case TaskSortingOptions.priority_Desc:
                     AddOrderByDescending(x => x.Priority);
                     break;
+
 
                 case TaskSortingOptions.created_at_Asc:
                     AddOrderBy(x => x.CreatedAt);
@@ -91,9 +65,11 @@ namespace Almentor.Services.Specifications
                     AddOrderByDescending(x => x.CreatedAt);
                     break;
 
+
                 default:
                     AddOrderByDescending(x => x.CreatedAt);
                     break;
+
             }
 
             ApplyPagination(queryParams.PageIndex, queryParams.PageSize);
