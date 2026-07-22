@@ -64,8 +64,7 @@ namespace Almentor.Services
             var projectsWithCointSpc = new ProjectWithCountSpecification(queryParams);
             var TotalCount = await repo.CountAsync(projectsWithCointSpc);
             var DataToReturn = _mapper.Map<IEnumerable<ProjectDto>>(projects);
-            var countOfReturnedData = DataToReturn.Count();
-            return new PaginatedResult<ProjectDto>(queryParams.PageIndex, countOfReturnedData, TotalCount, DataToReturn);
+            return new PaginatedResult<ProjectDto>(queryParams.PageIndex, queryParams.PageSize, TotalCount, DataToReturn);
 
         }
 
@@ -80,7 +79,7 @@ namespace Almentor.Services
 
             return _mapper.Map<ProjectDto?>(project);
 
-            
+
         }
 
         public async Task<ProjectDto?> UpdateAsync(int id, UpdateProjectDto dto)
@@ -107,7 +106,7 @@ namespace Almentor.Services
 
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<ProjectDto>(project);
-          
+
         }
     }
 }

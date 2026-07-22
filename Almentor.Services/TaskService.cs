@@ -96,7 +96,7 @@ namespace Almentor.Services
 
             return new PaginatedResult<TaskDto>(
                 queryParams.PageIndex,
-                data.Count(),
+                queryParams.PageSize,
                 totalCount,
                 data);
         }

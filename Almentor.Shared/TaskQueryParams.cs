@@ -11,11 +11,8 @@ namespace Almentor.Shared
         public TaskPriority? Priority { get; set; }
         public DateTime? DueDateFrom { get; set; }
         public DateTime? DueDateTo { get; set; }
-        public string? search { get; set; } // Search query
+        public string? q { get; set; } // Search query (?q=...)
 
-        //public string? SortBy { get; set; } = "created_at"; // due_date, priority, created_at
-
-        
         public TaskSortingOptions sort { get; set; }
 
         private int _pageIndex = 1;

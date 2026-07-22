@@ -41,12 +41,12 @@ namespace Almentor.Services.Specifications
                 &&
 
                 // Search
-                (string.IsNullOrWhiteSpace(queryParams.search) ||
+                (string.IsNullOrWhiteSpace(queryParams.q) ||
 
-                 task.Title.ToLower().Contains(queryParams.search.ToLower()) ||
+                 task.Title.ToLower().Contains(queryParams.q.ToLower()) ||
 
                  (task.Description != null &&
-                task.Description.ToLower().Contains(queryParams.search.ToLower())));
+                task.Description.ToLower().Contains(queryParams.q.ToLower())));
         }
     }
 }

@@ -27,12 +27,12 @@ namespace Almentor.Services.Specifications
                  (x.DueDate.HasValue &&
                   x.DueDate.Value.Date <= queryParams.DueDateTo.Value.Date)) &&
 
-                (string.IsNullOrWhiteSpace(queryParams.search) ||
+                (string.IsNullOrWhiteSpace(queryParams.q) ||
 
-                 x.Title.Contains(queryParams.search) ||
+                 x.Title.ToLower().Contains(queryParams.q.ToLower()) ||
 
                  (x.Description != null &&
-                  x.Description.Contains(queryParams.search)))
+                  x.Description.ToLower().Contains(queryParams.q.ToLower())))
             )
         {
             AddInclude(x => x.Project);
