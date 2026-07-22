@@ -8,16 +8,17 @@ using System.Text;
 
 namespace Almentor.Presentation.Controllers
 {
-    public class ProjectController:ApiBaseController
+    public class ProjectsController:ApiBaseController
     {
         private readonly IProjectService _projectService;
+        private readonly ITaskService _taskService;
 
-        public ProjectController(IProjectService projectService)
+        public ProjectsController(IProjectService projectService, ITaskService taskService)
         {
             _projectService = projectService;
+            _taskService = taskService;
         }
 
-        // POST: api/projects
         [HttpPost]
      
         public async Task<ActionResult<ProjectDto>> Create(CreateProjectDto dto)
@@ -30,7 +31,6 @@ namespace Almentor.Presentation.Controllers
                 project);
         }
 
-        // GET: api/projects
         [HttpGet]
         public async Task<ActionResult<PaginatedResult<ProjectDto>>> GetAll(
             [FromQuery] ProjectQueryParams queryParams)
@@ -55,7 +55,6 @@ namespace Almentor.Presentation.Controllers
             return Ok(project);
         }
 
-        // PUT: api/projects/5
         [HttpPut("{id:int}")]
         public async Task<ActionResult<ProjectDto>> Update(
             int id,
@@ -72,7 +71,6 @@ namespace Almentor.Presentation.Controllers
             return Ok(project);
         }
 
-        // DELETE: api/projects/5
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -87,6 +85,54 @@ namespace Almentor.Presentation.Controllers
             return NoContent();
         }
 
+
+        [HttpGet("/tasks{id:int}")]
+        public async Task<ActionResult<TaskDto>> GetTaskById(int id)
+        {
+            var task = await _taskService.GetByIdAsync(id);
+
+            if (task is null)
+            {
+                return NotFound(new
+                {
+                    Message = $"Task with id {id} was not found."
+                });
+            }
+
+            return Ok(task);
+        }
+
+
+        [HttpPost("{projectId:int}/tasks")]
+        public async Task<ActionResult<TaskDto>> CreateTask(
+            int projectId,
+            [FromBody] CreateTaskDto dto)
+        {
+            var task = await _taskService.CreateTaskForProjectAsync(projectId, dto);
+
+            if (task is null)
+            {
+                return NotFound(new
+                {
+                    Message = $"Project with id {projectId} was not found."
+                });
+            }
+
+            return CreatedAtAction(
+                nameof(GetTaskById),
+                new { id = task.Id },
+                task);
+        }
+
+        [HttpGet("{projectId:int}/tasks")]
+        public async Task<ActionResult<PaginatedResult<TaskDto>>> GetProjectTasks(
+            int projectId,
+            [FromQuery] TaskQueryParams queryParams)
+        {
+            var result = await _taskService.GetTasksAsync(projectId, queryParams);
+
+            return Ok(result);
+        }
 
     }
 }

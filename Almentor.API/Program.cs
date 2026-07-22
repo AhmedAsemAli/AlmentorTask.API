@@ -6,6 +6,7 @@ using Almentor.Services;
 using Almentor.Services.Abstraction;
 using Almentor.Services.MappingProfiles;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace Almentor.API
 {
@@ -32,7 +33,15 @@ namespace Almentor.API
 
             builder.Services.AddAutoMapper(typeof(ServiceAssemblyReference).Assembly);
             builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<ITaskService, TaskService>();
+           // using System.Text.Json.Serialization;
 
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(
+                        new JsonStringEnumConverter());
+                });
 
 
 
