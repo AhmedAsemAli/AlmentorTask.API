@@ -12,4 +12,5 @@
     <Project Path="Almentor.Presentation/Almentor.Presentation.csproj" />
   </Folder>
   <Project Path="Almentor.Shared/Almentor.Shared.csproj" />
+  <Project Path="AlmentorTask.Tests/AlmentorTask.Tests.csproj" />
 </Solution>

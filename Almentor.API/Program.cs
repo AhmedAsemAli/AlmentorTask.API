@@ -74,3 +74,4 @@ namespace Almentor.API
         }
     }
 }
+public partial class Program { }
